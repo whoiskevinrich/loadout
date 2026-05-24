@@ -185,12 +185,12 @@ export default function Queue() {
     await db.queue.update(rowId, { projectId })
   }
 
-  async function toggleProgress(rowId: string, itemId: string) {
+  async function toggleProgress(rowId: string, path: string) {
     const row = await db.queue.get(rowId)
     if (!row) return
     const progress = { ...(row.progress ?? {}) }
-    if (progress[itemId]) delete progress[itemId]
-    else progress[itemId] = true
+    if (progress[path]) delete progress[path]
+    else progress[path] = true
     await db.queue.update(rowId, { progress })
   }
 
@@ -585,7 +585,7 @@ interface QueueRowItemProps {
   canMoveUp: boolean
   canMoveDown: boolean
   onAssignProject: (pid: string | undefined) => void
-  onToggleProgress: (itemId: string) => void
+  onToggleProgress: (path: string) => void
   dragging: string | null
   dropTarget: DropTarget | null
   onDragStart: (e: React.DragEvent<HTMLLIElement>) => void
@@ -735,6 +735,7 @@ function QueueRowItem({
                 <TreeNode
                   key={`${i}:${child.itemId}`}
                   node={child}
+                  path={`${i}:${child.itemId}`}
                   depth={0}
                   row={row}
                   inventory={haveMap}
@@ -754,16 +755,17 @@ function QueueRowItem({
 
 interface TreeNodeProps {
   node: BuildNode
+  path: string
   depth: number
   row: QueueRow
   inventory: Map<string, number>
   game: Game
-  onToggle: (itemId: string) => void
+  onToggle: (path: string) => void
 }
 
-function TreeNode({ node, depth, row, inventory, game, onToggle }: TreeNodeProps) {
+function TreeNode({ node, path, depth, row, inventory, game, onToggle }: TreeNodeProps) {
   const item = getItem(game, node.itemId)
-  const checked = !!row.progress?.[node.itemId]
+  const checked = !!row.progress?.[path]
   const have = inventory.get(node.itemId) ?? 0
   const deficit = Math.max(0, node.qty - have)
   const recipe = node.isRaw ? null : getRecipe(game, node.itemId)
@@ -782,7 +784,7 @@ function TreeNode({ node, depth, row, inventory, game, onToggle }: TreeNodeProps
         <input
           type="checkbox"
           checked={checked}
-          onChange={() => onToggle(node.itemId)}
+          onChange={() => onToggle(path)}
           className="accent-sky-500 w-3.5 h-3.5 flex-shrink-0"
           aria-label={`Mark ${item?.name ?? node.itemId} handled`}
         />
@@ -816,6 +818,7 @@ function TreeNode({ node, depth, row, inventory, game, onToggle }: TreeNodeProps
           <TreeNode
             key={`${i}:${child.itemId}`}
             node={child}
+            path={`${path}/${i}:${child.itemId}`}
             depth={depth + 1}
             row={row}
             inventory={inventory}

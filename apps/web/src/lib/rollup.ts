@@ -72,6 +72,7 @@ export interface BuildNode {
   itemId: string
   qty: number
   isRaw: boolean
+  isCycle?: boolean
   children: BuildNode[]
 }
 
