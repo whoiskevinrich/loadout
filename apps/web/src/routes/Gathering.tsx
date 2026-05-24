@@ -65,7 +65,7 @@ export default function Gathering() {
     () =>
       collectComponents(
         game,
-        queueRows.map((r) => ({ itemId: r.itemId, qty: r.qty })),
+        queueRows.map((r) => ({ itemId: r.itemId, qty: r.qty, progress: r.progress })),
       ),
     [game, queueRows],
   )

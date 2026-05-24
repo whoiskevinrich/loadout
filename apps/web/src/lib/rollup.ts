@@ -90,17 +90,22 @@ export interface ComponentSummary {
  */
 export function collectComponents(
   game: Game,
-  entries: Array<{ itemId: string; qty: number }>,
+  entries: Array<{ itemId: string; qty: number; progress?: Record<string, boolean> }>,
 ): ComponentSummary[] {
   const acc = new Map<string, ComponentSummary>()
   for (const entry of entries) {
     const tree = buildTree(game, entry.itemId, entry.qty)
-    gatherNonRaw(tree.children, acc, 1)
+    gatherNonRaw(tree.children, acc, 1, entry.progress)
   }
   return [...acc.values()].sort((a, b) => b.tier - a.tier || a.itemId.localeCompare(b.itemId))
 }
 
-function gatherNonRaw(nodes: BuildNode[], acc: Map<string, ComponentSummary>, tier: number): void {
+function gatherNonRaw(
+  nodes: BuildNode[],
+  acc: Map<string, ComponentSummary>,
+  tier: number,
+  progress?: Record<string, boolean>,
+): void {
   for (const node of nodes) {
     if (!node.isRaw) {
       const existing = acc.get(node.itemId)
@@ -111,7 +116,11 @@ function gatherNonRaw(nodes: BuildNode[], acc: Map<string, ComponentSummary>, ti
         acc.set(node.itemId, { itemId: node.itemId, qty: node.qty, tier })
       }
     }
-    gatherNonRaw(node.children, acc, tier + 1)
+    // If this component is already crafted, don't recurse into its children —
+    // their sub-components are no longer needed via this path.
+    if (!progress?.[node.itemId]) {
+      gatherNonRaw(node.children, acc, tier + 1, progress)
+    }
   }
 }
 
