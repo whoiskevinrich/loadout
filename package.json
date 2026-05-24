@@ -9,6 +9,7 @@
     "build": "pnpm --filter @loadout/web build",
     "preview": "pnpm --filter @loadout/web preview",
     "typecheck": "pnpm -r typecheck",
+    "test": "pnpm -r test",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write \"**/*.{ts,tsx,json,md,css,html}\" --ignore-path .gitignore",

@@ -1,5 +1,18 @@
 # TODO
 
+[ ] Update game recipes with output qty. For example
+    - `silicone-rubber` is currently 1:1 with `creepvine-seed-cluster`, but the game actually gives 2 rubber per cluster. This is a common pattern where the output qty > 1, and it matters for accurate loadout math.
+    - Known recipes with output qty > 1: 
+        - `silicone-rubber` -> 2x
+        - `fiber-mesh`
+        - `computer-chip`
+        - `titanium-ingot`
+
+[ ] Manually verify...
+    - Vehicles: modules, upgrades, and plands
+    - torpedoes: all 4 types, with and without the depth module
+    - 
+
 ## Setup
 
 - [ ] **Refine skills with skill-creator.** `skill-creator` is installed. Run `/reload-plugins`, then `/skill-creator add-catalog-items` and `/skill-creator deploy-loadout` to tighten triggering accuracy and add evals.

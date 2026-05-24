@@ -1,4 +1,10 @@
 {
+  "permissions": {
+    "allow": [
+      "Bash(pnpm typecheck *)",
+      "WebFetch(domain:wiki.subnautica.com)"
+    ]
+  },
   "hooks": {
     "PostToolUse": [
       {

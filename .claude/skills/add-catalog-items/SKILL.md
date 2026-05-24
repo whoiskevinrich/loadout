@@ -11,7 +11,12 @@ Use this skill when the user asks to add or edit entries in `apps/web/src/games/
 
 1. **List what's requested.** Echo back the items as a short checklist so the user can correct typos before any work happens.
 
-2. **Verify recipes against the Subnautica wiki.** For each item, fetch `https://subnautica.fandom.com/wiki/<Item_Name>` (replace spaces with underscores). Extract the recipe (inputs + crafting station) from the infobox or recipe section. If a recipe contradicts what the user specified, flag the divergence inline and ask which to use — do not silently pick. If the wiki lookup fails, say so and ask for the recipe explicitly.
+2. **Verify recipes against the Subnautica wiki.** Order of precedence: 
+   1. User-supplied screen grab or image.
+   2. User-supplied text recipe.
+   3. Wiki lookup.: 
+      - Fetch `https://subnautica.fandom.com/wiki/<Item_Name>` (replace spaces with underscores). 
+      - Extract the recipe (inputs + crafting station) from the infobox or recipe section. 
 
 3. **Resolve dependencies.** For every input referenced in a recipe, check whether the input item already exists in the catalog (`grep` for the id). For each that doesn't:
    - If it's a raw material, add it to the raws section with biomes/sources from the wiki.
