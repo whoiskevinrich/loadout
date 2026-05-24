@@ -1,0 +1,29 @@
+node_modules/
+dist/
+build/
+.turbo/
+
+# CDK
+cdk.out/
+.cdk.staging/
+
+# Editors / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Local env
+*.local
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# Claude Code session state (set by hook-post-edit-cleanup.mjs, read by hook-stop-typecheck.mjs)
+.claude/.typecheck-pending-*
+.claude/settings.local.json
