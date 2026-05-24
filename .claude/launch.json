@@ -4,7 +4,7 @@
     {
       "name": "Loadout Web (dev)",
       "runtimeExecutable": "pnpm",
-      "runtimeArgs": ["dev"],
+      "runtimeArgs": ["-C", "apps/web", "run", "dev"],
       "port": 5173
     },
     {
