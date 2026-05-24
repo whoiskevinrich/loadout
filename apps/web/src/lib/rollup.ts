@@ -76,6 +76,45 @@ export interface BuildNode {
   children: BuildNode[]
 }
 
+export interface ComponentSummary {
+  itemId: string
+  qty: number
+  /** Depth in the crafting tree; higher = craft earlier (it feeds shallower components). */
+  tier: number
+}
+
+/**
+ * Collect all intermediate (non-raw) components needed across a queue.
+ * Excludes the queue items themselves (roots). Sorted deepest-tier first so
+ * the list reads bottom-up: craft these in order to satisfy the queue.
+ */
+export function collectComponents(
+  game: Game,
+  entries: Array<{ itemId: string; qty: number }>,
+): ComponentSummary[] {
+  const acc = new Map<string, ComponentSummary>()
+  for (const entry of entries) {
+    const tree = buildTree(game, entry.itemId, entry.qty)
+    gatherNonRaw(tree.children, acc, 1)
+  }
+  return [...acc.values()].sort((a, b) => b.tier - a.tier || a.itemId.localeCompare(b.itemId))
+}
+
+function gatherNonRaw(nodes: BuildNode[], acc: Map<string, ComponentSummary>, tier: number): void {
+  for (const node of nodes) {
+    if (!node.isRaw) {
+      const existing = acc.get(node.itemId)
+      if (existing) {
+        existing.qty += node.qty
+        if (tier > existing.tier) existing.tier = tier
+      } else {
+        acc.set(node.itemId, { itemId: node.itemId, qty: node.qty, tier })
+      }
+    }
+    gatherNonRaw(node.children, acc, tier + 1)
+  }
+}
+
 /**
  * Build a recursive requirements tree for one queued item.
  * Quantities at each node are already multiplied by parent batches.
