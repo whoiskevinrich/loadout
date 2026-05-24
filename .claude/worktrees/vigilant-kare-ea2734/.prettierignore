@@ -1,5 +1,0 @@
-node_modules/
-dist/
-cdk.out/
-pnpm-lock.yaml
-apps/web/src/games/subnautica.json
