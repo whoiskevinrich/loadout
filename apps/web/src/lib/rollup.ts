@@ -30,7 +30,7 @@ export function rollupRawMaterials(
   if (stack.has(itemId)) return new Map()
 
   const recipe = getRecipe(game, itemId)
-  if (!recipe) {
+  if (!recipe || !recipe.outputQty) {
     return new Map([[itemId, qty]])
   }
 
@@ -88,8 +88,11 @@ export function buildTree(
   stack: Set<string> = new Set(),
 ): BuildNode {
   const recipe = getRecipe(game, itemId)
-  if (!recipe || stack.has(itemId)) {
+  if (!recipe || !recipe.outputQty) {
     return { itemId, qty, isRaw: true, children: [] }
+  }
+  if (stack.has(itemId)) {
+    return { itemId, qty, isRaw: false, isCycle: true, children: [] }
   }
   stack.add(itemId)
   try {
